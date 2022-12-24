@@ -8,7 +8,7 @@ var App = {
 
   username: 'anonymous',
 
-  initialize: function() {
+  initialize: function () {
     App.username = window.location.search.substr(10);
 
     FormView.initialize();
@@ -23,22 +23,32 @@ var App = {
     // continually, instead of just once at the start.
   },
 
-  fetch: function(callback = ()=>{}) {
+  fetch: function (callback = () => { }) {
     Parse.readAll((data) => {
       // examine the response from the server request:
-      console.log(data);
+      // console.log(data);
+      for (let i = 0; i < data.length; i++) {
+        //add each object to Messages storage
+        Messages.add(data[i]);
+      }
+      //data is an array of 100 objects
+      //each object: campus, created_at, github_handle, message_id, roomname, text, updated_at, username
 
       // TODO: Use the data to update Messages and Rooms
       // and re-render the corresponding views.
     });
+    callback();
+    MessagesView.render();
+
+
   },
 
-  startSpinner: function() {
+  startSpinner: function () {
     App.$spinner.show();
     FormView.setStatus(true);
   },
 
-  stopSpinner: function() {
+  stopSpinner: function () {
     App.$spinner.fadeOut('fast');
     FormView.setStatus(false);
   }
