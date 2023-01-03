@@ -7,10 +7,20 @@ var MessageView = {
   // TODO: Update this template accordingly.
   render: _.template(`
       <div class="chat">
-        <div class="username"><%= username %></div>
+        <div class="username"
+        id = "<%= Friends.isFriend(username) ? 'friend' : '' %>"
+        data-username = "<%= username %>"
+        >
+        <%= username %></div>
         <div class="text"><%= text %></div>
-        <div class="roomname"<%= roomname %></div>
+        <div class="roomname"><%= roomname %></div>
       </div>
     `)
+  // render: _.template(`
+  //     <div class="chat" id = "<%= Friends.checkIsFriend(username) ? 'friend' : '' %>">
+  //       <div class="username"><%= username %></div>
+  //       <div class="text"><%= text %></div>
+  //     </div>
+  //   `)
 
 };

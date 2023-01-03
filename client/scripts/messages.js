@@ -17,30 +17,78 @@ var Messages = {
   //   text: 'trololo',
   //   roomname: '4chan',
   // };
-
-  add: function(info) {
-    //each info object: campus, created_at, github_handle, message_id, roomname, text, updated_at, username
-    console.log(info);
-    let newMessageObj = {'username': info.username, 'text': info.text, 'roomname': info.roomname};
-    //console.log('newMessageObj: ', newMessageObj);
-    //let newMessageObj
-    Messages._data[info['message_id']] = newMessageObj;
-    //info.'message_id'
-
+  items: function() {
+    return Object.values(Messages._data);
   },
-
-  retrieve: function () { //retrieves all messages in database
-    let allMessages = [];
-    console.log('Messages._data: ', Messages._data);
-    for (let info of Object.keys(Messages._data)) {
-      allMessages.push(Messages._data[info]);
+  add: function (message, callback = () => {}) {
+    let message1 = Messages.conform(message);
+    //smessage1.username = Messages.escapeHTML(message1.username);
+    message1.roomname = Messages.escapeHTML(message1.roomname);
+    message1.text = Messages.escapeHTML(message1.text);
+    Messages._data[message.message_id] = message1;
+    if (Rooms.isSelected()) {
+      callback();
+    } else {
+      callback(Rooms.selected);
     }
-    return allMessages;
+  },
+  update: function(messages, callback = () => {}) {
+    for (const message of messages) {
+      Messages.add(message);
+    }
+    //console.log('selected', Rooms.isSelected());
+    if (Rooms.isSelected()) {
+      callback();
+    } else {
+      callback(Rooms.selected);
+    }
+
+  },
+  conform: function(message) {
+    message.text = message.text || '';
+    message.username = message.username || '';
+    message.roomname = message.roomname || '';
+    return message;
+  },
+
+  escapeHTML: function (str) {
+    return String(str).replace(/[^\w. ]/gi, function (c) {
+      return '&#' + c.charCodeAt(0) + ';';
+    });
 
   },
 
-  update: function () {
+  // store: function (info) {
+  //   //each info object: campus, created_at, github_handle, message_id, roomname, text, updated_at, username
+  //   if (typeof info.text !== 'string' || info.text === null || info.text.length === 0 || info.roomname === null) {
+  //     return;
+  //   }
+  //   if (Messages._data[info.message_id] !== undefined) {
+  //     return;
+  //   }
+  //   let newMessageObj = {};
+  //   newMessageObj.username = Messages.escapeHTML(info.username);
+  //   newMessageObj.text = Messages.escapeHTML(info.text);
+  //   newMessageObj.roomname = Messages.escapeHTML(info.roomname);
+  //   //console.log('newMessageObj: ', newMessageObj);
+  //   Messages._data[info.message_id] = newMessageObj;
+  // },
 
-  }
+  // retrieve: function (roomname) { //retrieves all messages in database
+  //   let allMessages = [];
+  //   if (roomname === undefined) {
+  //     for (let info of Object.keys(Messages._data)) {
+  //       allMessages.push(Messages._data[info]);
+  //     }
+  //   } else {
+  //     //console.log('messages', Messages._data);
+  //     for (let info of Object.keys(Messages._data)) {
+  //       if (Messages._data[info].roomname === roomname) {
+  //         allMessages.push(Messages._data[info]);
+  //       }
+  //     }
+  //   }
+  //   return allMessages;
+  // }
 
 };

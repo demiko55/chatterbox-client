@@ -5,37 +5,76 @@ var MessagesView = {
 
   $chats: $('#chats'),
 
+  // initialize: function () {
+  //   // TODO: Perform any work which needs to be done
+  //   // when this view loads.
+  //   MessagesView.handleClick();
+  // },
   initialize: function () {
-    // TODO: Perform any work which needs to be done
-    // when this view loads.
+    MessagesView.$chats.on('click', '.username', MessagesView.handleClick);
   },
 
-  render: function () {
-    // TODO: Render _all_ the messages.
-    //Messages._data
-    // for all messages //renderMessage(message)
-    let data = Messages.retrieve();
-    console.log(data);
-    let html = '';
-    for (let i = 0; i < data.length; i++) {
-      let h = MessagesView.renderMessage(data[i]);
-      html += h;
+  // render: function (roomname) {
+  //   // TODO: Render _all_ the messages.
+  //   //Messages._data
+  //   // for all messages //renderMessage(message)
+  //   var data = [];
+  //   if (roomname === undefined) {
+  //     data = Messages.retrieve();
+  //   } else {
+  //     data = Messages.retrieve(roomname);
+  //     //console.log('room data', data);
+  //   }
+  //   console.log('data', data);
+  //   $('#chats').empty();
+  //   for (let i = 0; i < data.length; i++) {
+  //     MessagesView.renderMessage(data[i]);
+  //   }
+  // },
+  render: function (roomname) {
+    MessagesView.$chats.html('');
+    let messages = Messages.items();
+    if (roomname === undefined) {
+      messages.forEach(message => {
+        MessagesView.renderMessage(message);
+      });
+    } else {
+      messages.forEach(message => {
+        if (message.roomname === roomname) {
+          MessagesView.renderMessage(message);
+        }
+      });
     }
-    console.log('html to append: ', html);
-    $('#chats').append(html);
+
   },
 
+  // renderMessage: function (message) {
+  //   // TODO: Render a single message.
+  //   let html = '';
+  //   html += MessageView.render(message);
+  //   //console.log('html', html);
+  //   $('#chats').prepend(html);
+  //   //append here
+  // },
   renderMessage: function (message) {
-    // TODO: Render a single message.
-    let html = '';
-    html += MessageView.render(message);
-    return html;
-    //append here
+    var $message = MessageView.render(message);
+    //console.log('render message', $message);
+    MessagesView.$chats.prepend($message);
+
   },
 
-  handleClick: function (event) {
-    // TODO: handle a user clicking on a message
-    // (this should add the sender to the user's friend list).
+  // handleClick: function (event) {
+  //   // TODO: handle a user clicking on a message
+  //   // (this should add the sender to the user's friend list).
+  //   MessagesView.$chats.on('click', '.username', function (event) {
+  //     var username = event.currentTarget.textContent;
+  //     Friends.toggleStatus(username);
+  //   });
+  // }
+  handleClick: function(event) {
+    var username = $(event.target).data('username');
+    console.log('click name', username);
+    Friends.toggleStatus(username, MessagesView.render);
   }
 
 };

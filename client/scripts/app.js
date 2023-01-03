@@ -19,26 +19,28 @@ var App = {
     App.startSpinner();
     App.fetch(App.stopSpinner);
 
+
     // TODO: Make sure the app loads data from the API
     // continually, instead of just once at the start.
+    setInterval(App.fetch, 3000);
   },
 
   fetch: function (callback = () => { }) {
     Parse.readAll((data) => {
       // examine the response from the server request:
-      // console.log(data);
-      for (let i = 0; i < data.length; i++) {
-        //add each object to Messages storage
-        Messages.add(data[i]);
-      }
-      //data is an array of 100 objects
+      //console.log(' fetch data', data);
+
+      //data is an array of  objects
       //each object: campus, created_at, github_handle, message_id, roomname, text, updated_at, username
 
       // TODO: Use the data to update Messages and Rooms
       // and re-render the corresponding views.
+      Messages.update(data, MessagesView.render);
+      Rooms.update(data, RoomsView.render);
+
+      callback();
     });
-    callback();
-    MessagesView.render();
+
 
 
   },
